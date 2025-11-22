@@ -26,7 +26,7 @@ Yep. MacBooks have a hidden lid angle sensor that reports its exact position. I'
 
 **Will it work on my M1 Mac?**
 I made and tested this on my M1 pro, so hopefully it does on yours too! 
-Howevers, users seem to have troubles with getting it to run on the base M1 Air and touchbar Pro from 2020. :/
+However, users seem to have troubles with getting it to run on the base M1 Air and touchbar Pro from 2020. :/
 
 **What about my iMac?**
 Does it have a lid you can flap? No? Then you might be out of luck. I suppose you could try picking it up and shaking it gently, but my lawyer (and yours) would strongly advise against it.
