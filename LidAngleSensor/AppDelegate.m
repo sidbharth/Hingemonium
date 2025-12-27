@@ -305,18 +305,24 @@ static const int kKeyToMidiNote[] = {
     int baseNote = kKeyToMidiNote[key];
     if (baseNote == 0) return -1;
     
-    int finalNote = baseNote;
+int shiftedBase = baseNote + (self.currentOctaveShift * 12);
+    
+    int finalNote = shiftedBase;
+    
+    // (Existing Scale Logic)
     if (![self.currentScale isEqualToString:@"Chromatic"]) {
         NSArray<NSNumber *> *scaleIntervals = self.scaleNoteMapping[self.currentScale];
-        int rootNote = 48; // C3
+        int rootNote = 48; 
         
         int closestNoteInScale = -1;
         int minDistance = 100;
         
         for (int octave = -1; octave <= 2; octave++) {
             for (NSNumber *interval in scaleIntervals) {
+                // Adjust scale calculation to respect the shift if needed, 
+                // but usually sticking to the nearest valid note works best.
                 int noteInScale = rootNote + interval.intValue + (octave * 12);
-                int distance = abs(noteInScale - baseNote);
+                int distance = abs(noteInScale - shiftedBase); // Compare against shifted base
                 if (distance < minDistance) {
                     minDistance = distance;
                     closestNoteInScale = noteInScale;
@@ -326,6 +332,7 @@ static const int kKeyToMidiNote[] = {
         finalNote = closestNoteInScale;
     }
     return finalNote;
+}
 }
 - (NSString *)noteNameForMidi:(int)midiNote {
     if (midiNote < 0) return @"-";
