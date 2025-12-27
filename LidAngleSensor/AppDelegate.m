@@ -70,10 +70,50 @@ static const int kKeyToMidiNote[] = {
     if (keyStr.length == 0) return;
     
     char character = [keyStr characterAtIndex:0];
+    
+    // NEW: Handle Octave Switching
+    if (character == '[') {
+        // Decrease Octave (Limit to -1 for C2 range)
+        self.currentOctaveShift = MAX(-1, self.currentOctaveShift - 1);
+        [self updateTitleWithOctave];
+        return;
+    }
+    if (character == ']') {
+        // Increase Octave (Limit to +1 for D5 range)
+        self.currentOctaveShift = MIN(1, self.currentOctaveShift + 1);
+        [self updateTitleWithOctave];
+        return;
+    }
+    
+    // NEW: Sticky Note Logic (Store the note we are about to play)
     int midiNote = [self getMidiNoteForKey:character];
     
     if (midiNote > 0) {
+        // 1. Save the note into our memory dictionary
+        self.activeKeyNotes[@(character)] = @(midiNote);
+        
+        // 2. Play the note
         [self.harmoniumEngine playNote:midiNote];
+    }
+}
+
+- (void)keyCaptureView:(KeyCaptureView *)view didReceiveKeyUp:(NSEvent *)event {
+    NSString *keyStr = event.charactersIgnoringModifiers.lowercaseString;
+    if (keyStr.length == 0) return;
+    
+    char character = [keyStr characterAtIndex:0];
+    
+    // NEW: Sticky Note Logic (Retrieve the specific note we played)
+    NSNumber *storedNote = self.activeKeyNotes[@(character)];
+    
+    if (storedNote) {
+        int midiNote = storedNote.intValue;
+        
+        // 1. Release the exact note that was started
+        [self.harmoniumEngine releaseNote:midiNote];
+        
+        // 2. Clear the memory
+        [self.activeKeyNotes removeObjectForKey:@(character)];
     }
 }
 
@@ -299,6 +339,13 @@ static const int kKeyToMidiNote[] = {
         }
     }
     self.legendLabel.stringValue = legendText;
+}
+
+- (void)updateTitleWithOctave {
+    NSString *octaveSign = self.currentOctaveShift > 0 ? @"+" : @"";
+    NSString *octaveStatus = self.currentOctaveShift == 0 ? @"" : [NSString stringWithFormat:@" (Octave %s%d)", [octaveSign UTF8String], self.currentOctaveShift];
+    
+    [self.titleLabel setStringValue:[NSString stringWithFormat:@"Harmonium for Mac%@", octaveStatus]];
 }
 
 - (int)getMidiNoteForKey:(char)key {
