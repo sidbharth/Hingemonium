@@ -49,4 +49,7 @@ typedef NS_ENUM(NSInteger, NoteNamingMode) {
 @property (nonatomic, assign) NoteNamingMode currentNamingMode;
 @property (strong) NSArray<NSNumber *> *mappedKeys; // To iterate keys in order
 
+// NEW: Property to track the octave shift (-1, 0, +1)
+@property (nonatomic, assign) int currentOctaveShift;
+
 @end
