@@ -15,6 +15,11 @@ static const int kKeyToMidiNote[] = {
     [','] = 60, ['l'] = 61, ['.'] = 62
 };
 
+@interface AppDelegate ()
+// This dictionary remembers which note is playing for each key
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, NSNumber *> *activeKeyNotes;
+@end
+
 @implementation AppDelegate
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // --- Window and Custom View Setup ---
