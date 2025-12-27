@@ -41,6 +41,8 @@ static const int kKeyToMidiNote[] = {
     // --- Component Initialization ---
     self.harmoniumEngine = [[HarmoniumAudioEngine alloc] init];
     self.lidSensor = [[LidAngleSensor alloc] init];
+    self.currentOctaveShift = 0;
+    self.activeKeyNotes = [NSMutableDictionary dictionary];
     self.currentNamingMode = NoteNamingModeWestern;
     self.lastLidAngle = -1.0;
     self.lastUpdateTime = CACurrentMediaTime();
