@@ -333,7 +333,6 @@ int shiftedBase = baseNote + (self.currentOctaveShift * 12);
     }
     return finalNote;
 }
-}
 - (NSString *)noteNameForMidi:(int)midiNote {
     if (midiNote < 0) return @"-";
 
